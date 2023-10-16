@@ -1,4 +1,4 @@
-certifi==2021.10.8
+certifi==2023.7.22
 Flask==2.0.2
 Flask-RESTful==0.3.9
 httpie==3.0.2
