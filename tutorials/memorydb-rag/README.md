@@ -5,9 +5,9 @@ Large language models are prone to hallucination, which is just a fancy word for
 
 With Retrieval-Augmented Generation, we first pass a user's prompt to a data store. This might be in the form of a query to Amazon Kendra . We could also create a numerical representation of the prompt using Amazon Titan Embeddings to pass to a vector database. We then retrieve the most relevant content from the data store to support the large language model's response.
 
-In this lab, we will use an in-memory FAISS  database to demonstrate the RAG pattern. In a real-world scenario, you will most likely want to use a persistent data store like Amazon Kendra or the vector engine for Amazon OpenSearch Serverless .
+In this lab, we will use an in-memory database Amazon MemoryDB  to demonstrate the RAG pattern. 
 
- will walk you through the steps to deploy a Python chatbot application using Streamlit on Cloud9. This is the architecture we will be implementing today.
+We will walk you through the steps to deploy a Python chatbot application using Streamlit on Cloud9. This is the architecture we will be implementing today.
 
 ![Architecture Diagram](./images/architecture-rag.png)
 
@@ -54,7 +54,7 @@ from langchain_memorydb import MemoryDB as Redis
 4. Configure environment variables.
 ```bash
 export BWB_ENDPOINT_URL=https://bedrock-runtime.us-east-1.amazonaws.com
-export MemoryDB_ENDPOINT_URL=redis://CLUSTER_ENDPOINT:PORT
+export MemoryDB_ENDPOINT_URL=rediss://CLUSTER_ENDPOINT:PORT
 export BWB_PROFILE_NAME=IF_YOU_NEED_TO_USE_AN_AWS_CLI_PROFILE_IT_GOES_HERE
 export BWB_REGION_NAME=REGION_NAME_GOES_HERE_IF_YOU_NEED_TO_OVERRIDE_THE_DEFAULT_REGION
 ```
