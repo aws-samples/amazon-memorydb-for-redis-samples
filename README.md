@@ -12,6 +12,7 @@ The following are blogs covering various use cases for Amazon MemoryDB for Redis
 ## Tutorials
 
 - [Retrieval Augmented Generation with MemoryDB as VectorStore ](tutorials/memorydb-rag/)
+- [SemanticSearch with MemoryDB ](tutorials/SimilaritySearch/)
 
 ## Security
 
