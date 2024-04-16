@@ -47,7 +47,6 @@ class Customers(Resource):
             customer = redis.hgetall(key)
             customer['id'] = customer_id
             customers.append(customer)
-            print(customer)
         return customers
 
     def post(self):
