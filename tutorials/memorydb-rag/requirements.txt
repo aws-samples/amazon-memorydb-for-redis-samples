@@ -8,3 +8,4 @@ streamlit
 botocore
 boto3
 awscli
+python-dotenv==1.0.1
