@@ -1,32 +1,30 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-from sentence_transformers import SentenceTransformer
 import numpy as np
 import pandas as pd
 import redis
 import json
 import time
+import os
+from sentence_transformers import SentenceTransformer
 from redis.commands.search.query import Query
 from redis.commands.search.field import VectorField
 from redis.commands.search.field import TextField
 from redis.commands.search.field import TagField
 from redis.commands.search.result import Result
-
+from redis.cluster import RedisCluster as Redis
 # Constants
 INDEX_NAME = 'idx:pqa_vss'
 ITEM_KEYWORD_EMBEDDING_FIELD = 'question_vector'
 TEXT_EMBEDDING_DIMENSION = 768
 NUMBER_PRODUCTS = 1000
-
+MEMORYDB_CLUSTER = os.environ.get("MEMORYDB_CLUSTER")
 # Initialize model
 model = SentenceTransformer('sentence-transformers/all-distilroberta-v1')
 
 # Initialize Redis client
 def initialize_redis():
-    client = redis.Redis(
-        host='memoryd-rag-0001-001.memoryd-rag.ghlaqp.memorydb.us-east-1.amazonaws.com',
-        port=6379, decode_responses=True, ssl=True, ssl_cert_reqs="none")
+    client = Redis(host=MEMORYDB_CLUSTER, 
+           port=6379,ssl=True, decode_responses=True, ssl_cert_reqs="none")
+    
     try:
         client.ping()
         print("Connection to MemoryDB successful")
@@ -108,5 +106,4 @@ def process_question(client, query):
     results = client.ft(INDEX_NAME).search(q, query_params=params_dict)
     data = [{'Hash Key': doc.id, 'Question': doc.question, 'Answer': doc.answer} for doc in results.docs]
     return pd.DataFrame(data)
-
 

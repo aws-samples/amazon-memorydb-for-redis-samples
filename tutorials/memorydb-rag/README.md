@@ -1,4 +1,4 @@
-# Amazon MemoryDB for Redis 
+# Amazon MemoryDB
 ## Retrieval Augmented Generation with MemoryDB as VectorStore 
 
 Large language models are prone to hallucination, which is just a fancy word for making up a response. To correctly and consistently answer questions, we need to ensure that the model has real information available to support its responses. We use the Retrieval-Augmented Generation (RAG) pattern to make this happen.
@@ -41,34 +41,25 @@ pip3 install -r requirements.txt -U
 
 3. Install  langchain vectorstore plugin for MemoryDB
 ```bash
-git clone https://github.com/aws-samples/amazon-memorydb-for-redis-samples
 cd tutorials/langchain-memorydb
 pip install . 
 ```
 
-**To use the MemoryDB VectorStore, import the class MemoryDB**
+**To use the MemoryDB VectorStore langchain plugin in your application ensure you have an import as below import the class MemoryDB**
 ```python
 from langchain_memorydb import MemoryDB as Redis
 ````
 
-4. Configure environment variables.
+4. Configure environment variables (optional) .
 ```bash
+
+export MEMORYDB_CLUSTER=rediss://CLUSTER_ENDPOINT:PORT
 export BWB_ENDPOINT_URL=https://bedrock-runtime.us-east-1.amazonaws.com
-export MemoryDB_ENDPOINT_URL=rediss://CLUSTER_ENDPOINT:PORT
-export BWB_PROFILE_NAME=IF_YOU_NEED_TO_USE_AN_AWS_CLI_PROFILE_IT_GOES_HERE
-export BWB_REGION_NAME=REGION_NAME_GOES_HERE_IF_YOU_NEED_TO_OVERRIDE_THE_DEFAULT_REGION
 ```
 
-4. You can run the following commands to confirm:
+4. Running the application
 ```bash
-echo $BWB_ENDPOINT_URL
-echo $BWB_PROFILE_NAME
-echo $BWB_REGION_NAME
-```
-
-5. Running the application
-```bash
-streamlit run `ragmm_app.py' --server.port 8080}
+streamlit run 'ragmm_app.py' --server.port 8080
 ```
 
 ## Features 
