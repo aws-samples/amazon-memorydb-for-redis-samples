@@ -22,7 +22,7 @@ Before you proceed, make sure you have the following prerequisites in place:
 1. Clone this repository to your Cloud9 environment:
     ```bash
     git clone https://github.com/aws-samples/amazon-memorydb-for-redis-samples
-    cd tutorials/memorydb-vss
+    cd tutorials/SimilaritySearch/
     ```
 
 2. Install the required packages using pip:
