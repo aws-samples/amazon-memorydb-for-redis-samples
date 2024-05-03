@@ -1,4 +1,4 @@
-# Amazon MemoryDB for Redis 
+# Amazon MemoryDB
 
 ## Similarity Search with MemoryDB as VectorStore 
 
@@ -22,29 +22,37 @@ Before you proceed, make sure you have the following prerequisites in place:
 1. Clone this repository to your Cloud9 environment:
     ```bash
     git clone https://github.com/aws-samples/amazon-memorydb-for-redis-samples
-    cd tutorials/memorydb-vss
+    cd tutorials/SimilaritySearch/
     ```
 
 2. Install the required packages using pip:
     ```bash
     pip3 install -r requirements.txt
     ```
-
-3. Running the application:
+3. Download the json file from the amazon pqa for Headset
     ```bash
-    streamlit run `mmapp.py' --server.port 8080
+    aws s3 cp --no-sign-request s3://amazon-pqa/amazon_pqa_headsets.json ./amazon-pqa/amazon_pqa_headsets.json
+    ```
+4. Set Amazon MemoryDB cluster endpoint 
+    ```bash
+    export MEMORYDB_CLUSTER="Your cluster endpoint"
+    ```
+5. Running the application:
+    ```bash
+    cd memorydb-vss
+    streamlit run 'mmapp.py' --server.port 8080
     ```
 
-4. Create index and store embeddings in MemoryDB 
+6. Create index and store embeddings in MemoryDB 
 ![No Index](./images/no-index.png)
 
     At this step, the index is first created. We then load the PQA question, answer, and embeddings data as HASHES to MemoryDB. 
 
-5. Once the index is created, query the data store to find similar results. 
+7. Once the index is created, query the data store to find similar results. 
 ![With Index](./images/user_query.png)
 
     Here's an example: suppose we want to ask if a particular headset is compatible with PC, and we ask the question "Does this work with my PC?". Suppose also that we have the following in our Q&A data set:
 
-6. If we use text search, we would expect to return results for questions that match words such as "Windows", "10", and "Work", which will match some questions that aren't particularly relevant to our question. With semantic search, we would expect to find results that have a similar meaning, despite using different words. In this example, we will get more meaningful results.
+8. If we use text search, we would expect to return results for questions that match words such as "Windows", "10", and "Work", which will match some questions that aren't particularly relevant to our question. With semantic search, we would expect to find results that have a similar meaning, despite using different words. In this example, we will get more meaningful results.
 
 ![Result](./images/result.png)
