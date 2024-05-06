@@ -22,9 +22,12 @@ model = SentenceTransformer('sentence-transformers/all-distilroberta-v1')
 
 # Initialize Redis client
 def initialize_redis():
-    client = Redis(host=MEMORYDB_CLUSTER, 
-           port=6379,ssl=True, decode_responses=True, ssl_cert_reqs="none")
-    
+    client = redis.Redis(
+        host=MEMORYDB_CLUSTER,
+        port=6379, 
+        decode_responses=True, 
+        ssl=True, 
+        ssl_cert_reqs="none")
     try:
         client.ping()
         print("Connection to MemoryDB successful")
