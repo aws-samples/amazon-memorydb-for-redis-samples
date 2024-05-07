@@ -1,4 +1,4 @@
-faiss-cpu==1.8.0
+#faiss-cpu==1.8.0
 transformers==4.39.3
 Pillow==10.3.0
 pypdf==4.2.0
