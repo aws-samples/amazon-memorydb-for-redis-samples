@@ -1,0 +1,167 @@
+[
+    {
+        "userId": "user001",
+        "purchaseDate": "2023-01-15",
+        "item": "Laptop",
+        "warrantyStartDate": "2023-01-16",
+        "warrantyEndDate": "2024-01-16",
+        "extendedWarranty": "2026-01-16",
+        "returnPolicy": "30 days",
+        "preferredCommunicationMethod": "Email",
+        "countryOfResidence": "USA"
+    },
+    {
+        "userId": "user002",
+        "purchaseDate": "2023-02-10",
+        "item": "Tablet",
+        "warrantyStartDate": "2023-02-11",
+        "warrantyEndDate": "2024-02-11",
+        "extendedWarranty": "2025-02-11",
+        "returnPolicy": "30 days",
+        "preferredCommunicationMethod": "Phone",
+        "countryOfResidence": "Canada"
+    },
+    {
+        "userId": "user003",
+        "purchaseDate": "2023-06-05",
+        "item": "Camera",
+        "warrantyStartDate": "2023-06-06",
+        "warrantyEndDate": "2024-06-06",
+        "extendedWarranty": "2025-06-06",
+        "returnPolicy": "14 days",
+        "preferredCommunicationMethod": "SMS",
+        "countryOfResidence": "UK"
+    },
+    {
+        "userId": "user004",
+        "purchaseDate": "2023-08-12",
+        "item": "TV",
+        "warrantyStartDate": "2023-08-13",
+        "warrantyEndDate": "2024-08-13",
+        "extendedWarranty": "2026-08-13",
+        "returnPolicy": "30 days",
+        "preferredCommunicationMethod": "Phone",
+        "countryOfResidence": "Australia"
+    },
+    {
+        "userId": "user005",
+        "purchaseDate": "2023-11-14",
+        "item": "Gaming Console",
+        "warrantyStartDate": "2023-11-15",
+        "warrantyEndDate": "2024-11-15",
+        "extendedWarranty": "2025-11-15",
+        "returnPolicy": "30 days",
+        "preferredCommunicationMethod": "SMS",
+        "countryOfResidence": "Germany"
+    },
+    {
+        "userId": "user006",
+        "purchaseDate": "2023-01-30",
+        "item": "Laptop",
+        "warrantyStartDate": "2023-01-31",
+        "warrantyEndDate": "2024-01-31",
+        "extendedWarranty": "2026-01-31",
+        "returnPolicy": "30 days",
+        "preferredCommunicationMethod": "Email",
+        "countryOfResidence": "France"
+    },
+    {
+        "userId": "user007",
+        "purchaseDate": "2023-02-15",
+        "item": "Tablet",
+        "warrantyStartDate": "2023-02-16",
+        "warrantyEndDate": "2024-02-16",
+        "extendedWarranty": "2025-02-16",
+        "returnPolicy": "30 days",
+        "preferredCommunicationMethod": "Phone",
+        "countryOfResidence": "Italy"
+    },
+    {
+        "userId": "user008",
+        "purchaseDate": "2023-06-10",
+        "item": "Camera",
+        "warrantyStartDate": "2023-06-11",
+        "warrantyEndDate": "2024-06-11",
+        "extendedWarranty": "2025-06-11",
+        "returnPolicy": "14 days",
+        "preferredCommunicationMethod": "SMS",
+        "countryOfResidence": "Spain"
+    },
+    {
+        "userId": "user009",
+        "purchaseDate": "2023-08-20",
+        "item": "TV",
+        "warrantyStartDate": "2023-08-21",
+        "warrantyEndDate": "2024-08-21",
+        "extendedWarranty": "2026-08-21",
+        "returnPolicy": "30 days",
+        "preferredCommunicationMethod": "Phone",
+        "countryOfResidence": "Netherlands"
+    },
+    {
+        "userId": "user010",
+        "purchaseDate": "2023-11-25",
+        "item": "Gaming Console",
+        "warrantyStartDate": "2023-11-26",
+        "warrantyEndDate": "2024-11-26",
+        "extendedWarranty": "2025-11-26",
+        "returnPolicy": "30 days",
+        "preferredCommunicationMethod": "SMS",
+        "countryOfResidence": "Sweden"
+    },
+    {
+        "userId": "user011",
+        "purchaseDate": "2023-03-10",
+        "item": "Smartphone",
+        "warrantyStartDate": "2023-03-11",
+        "warrantyEndDate": "2024-03-11",
+        "extendedWarranty": "2025-03-11",
+        "returnPolicy": "15 days",
+        "preferredCommunicationMethod": "Email",
+        "countryOfResidence": "India"
+    },
+    {
+        "userId": "user012",
+        "purchaseDate": "2023-05-20",
+        "item": "Smartwatch",
+        "warrantyStartDate": "2023-05-21",
+        "warrantyEndDate": "2024-05-21",
+        "extendedWarranty": "2025-05-21",
+        "returnPolicy": "30 days",
+        "preferredCommunicationMethod": "SMS",
+        "countryOfResidence": "Brazil"
+    },
+    {
+        "userId": "user013",
+        "purchaseDate": "2023-07-30",
+        "item": "E-reader",
+        "warrantyStartDate": "2023-07-31",
+        "warrantyEndDate": "2024-07-31",
+        "extendedWarranty": "2025-07-31",
+        "returnPolicy": "30 days",
+        "preferredCommunicationMethod": "Email",
+        "countryOfResidence": "Mexico"
+    },
+    {
+        "userId": "user014",
+        "purchaseDate": "2023-09-15",
+        "item": "Headphones",
+        "warrantyStartDate": "2023-09-16",
+        "warrantyEndDate": "2024-09-16",
+        "extendedWarranty": "2025-09-16",
+        "returnPolicy": "15 days",
+        "preferredCommunicationMethod": "Phone",
+        "countryOfResidence": "South Africa"
+    },
+    {
+        "userId": "user015",
+        "purchaseDate": "2023-11-05",
+        "item": "Speaker",
+        "warrantyStartDate": "2023-11-06",
+        "warrantyEndDate": "2024-11-06",
+        "extendedWarranty": "2025-11-06",
+        "returnPolicy": "15 days",
+        "preferredCommunicationMethod": "Email",
+        "countryOfResidence": "Japan"
+    }
+]
