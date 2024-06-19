@@ -1,0 +1,265 @@
+import os
+import redis
+from redis.cluster import RedisCluster
+import json
+import time
+from dotenv import load_dotenv
+import pymysql
+from langchain.embeddings import BedrockEmbeddings
+from langchain.llms.bedrock import Bedrock
+from langchain.memory import ConversationSummaryBufferMemory
+from langchain.chains import ConversationChain
+from langchain.document_loaders import PyPDFLoader
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain.chains import RetrievalQA
+from langchain.prompts import PromptTemplate
+from langchain_memorydb import MemoryDB as Redis
+from langchain.chains import LLMChain
+load_dotenv()
+ 
+ 
+# Constants
+MEMORYDB_CLUSTER = os.environ.get("MEMORYDB_CLUSTER")
+INDEX_NAME = 'idx:vss-chatbot'
+REDIS_URL = f"rediss://{MEMORYDB_CLUSTER}:6379/ssl=True&ssl_cert_reqs=none"
+pdf_path= "policy_doc.pdf"
+rc = RedisCluster(host='clustercfg.memoryd-rag.ghlaqp.memorydb.us-east-1.amazonaws.com', 
+           port=6379,ssl=True, decode_responses=True, ssl_cert_reqs="none")
+
+#rc = rd.Redis(host='clustercfg.memoryd-rag.ghlaqp.memorydb.us-east-1.amazonaws.com', port=6379, decode_responses=True, ssl=True, ssl_cert_reqs="none")
+ 
+def initialize_redis():
+    configs = get_configs()
+    
+    client=RedisCluster(
+           host=configs['MEMORYDB_CLUSTER'], 
+           port=6379,
+           ssl=True, 
+           decode_responses=True, 
+           ssl_cert_reqs="none")
+    try:
+        client.ping()
+        print("Connection to MemoryDB successful")
+        return client
+    except Exception as e:
+        print("An error occurred while connecting to Redis:", e)
+        return None
+ 
+ 
+def get_configs():
+    configs = {}
+    configs['MEMORYDB_CLUSTER'] = os.environ.get("MEMORYDB_CLUSTER")
+    configs['BWB_PROFILE_NAME'] = os.environ.get("BWB_PROFILE_NAME") #sets the profile name to use for AWS credentials (if not the default)
+    configs['BWB_REGION_NAME'] = os.environ.get("BWB_REGION_NAME") #sets the region name (if not the default)
+    configs['BWB_ENDPOINT_URL'] = os.environ.get("BWB_ENDPOINT_URL") #sets the endpoint URL (if necessary)
+    #configs['MODEL_ID'] = "mmeta.llama2-13b-chat-v1"
+    configs['MODEL_ID'] = "anthropic.claude-instant-v1"
+    #configs['MODEL_ID'] = "anthropic.claude-3-sonnet-20240229-v1:0" #use the Anthropic Claude model
+ 
+    return configs
+ 
+ 
+# Initialize Bedrock model
+def get_llm():
+    model_kwargs = {
+        "max_tokens_to_sample": 8000,
+        "temperature": 0.2,
+        "top_k": 250,
+        "top_p": 0.9,
+        "stop_sequences": ["\\n\\nHuman:"],
+    }
+    configs = get_configs()
+    llm = Bedrock(
+        credentials_profile_name=configs['BWB_PROFILE_NAME'],
+        region_name=configs['BWB_REGION_NAME'],
+        endpoint_url=configs['BWB_ENDPOINT_URL'],
+        model_id=configs['MODEL_ID'],
+        model_kwargs=model_kwargs
+    ) #configure the properties for Claude
+    return llm
+   
+    
+# Initialize embeddings
+def initialize_embeddings():
+    configs = get_configs()
+    embeddings = BedrockEmbeddings(
+        credentials_profile_name=configs["BWB_PROFILE_NAME"],
+        region_name=configs["BWB_REGION_NAME"],
+        endpoint_url=configs["BWB_ENDPOINT_URL"],
+    )
+    return embeddings
+   
+    
+def check_index_existence():
+    try:
+        client=initialize_redis()
+        info = client.ft(INDEX_NAME).info()
+        num_docs = info.get('num_docs', 'N/A')
+        space_usage = info.get('space_usage', 'N/A')
+        num_indexed_vectors = info.get('num_indexed_vectors', 'N/A')
+        vector_space_usage = info.get('vector_space_usage', 'N/A')
+        index_details = {
+            'num_docs': num_docs,
+            'space_usage': space_usage,
+            'num_indexed_vectors': num_indexed_vectors,
+            'vector_space_usage': vector_space_usage,
+            'exists': True
+        }
+        return index_details
+    except Exception:
+        return {'exists': False}
+ 
+ 
+def initializeVectorStore():
+    # Start measuring the execution time of the function
+    start_time = time.time()
+    embeddings = initialize_embeddings()
+    try:
+        # Load and split PDF
+        # Initialize the PDF loader with the specified file path
+        loader = PyPDFLoader(file_path=pdf_path)
+        # Load the PDF pages
+        pages = loader.load_and_split()
+        # Define the text splitter settings for chunking the text
+        text_splitter = RecursiveCharacterTextSplitter(
+            separators=["\n\n", "\n", ".", " "],
+            chunk_size=500,
+            chunk_overlap=50
+        )
+        # Split the text into chunks using the defined splitter
+        chunks = loader.load_and_split(text_splitter)
+        # Create Redis vector store
+        # Initialize the Redis vector store with the chunks and embedding details
+        vectorstore = Redis.from_documents(
+            chunks,
+            embedding=embeddings,
+            redis_url=REDIS_URL,
+            index_name=INDEX_NAME,
+        )
+        # Calculate and print the execution time upon successful completion
+        end_time = time.time()
+        print(f"initializeVectorStore() executed in {end_time - start_time:.2f} seconds")
+        return vectorstore
+    except Exception as e:
+        # Handle any exceptions that occur during execution
+        # Calculate and print the execution time till the point of failure
+        end_time = time.time()
+        print(f"Error occurred during initializeVectorStore(): {e}")
+        print(f"Failed execution time: {end_time - start_time:.2f} seconds")
+        # Return None to indicate failure
+        return None
+ 
+ 
+def initializeRetriever():
+    """
+    Initializes a Redis instance as a retriever for an existing vector store.
+ 
+    :param redis_url: The URL of the Redis instance.
+    :param index_name: The name of the index in the Redis vector store.
+    :param embeddings: The embeddings to use for the retriever.
+    :param index_schema: (Optional) The index schema, if needed.
+    :return: The retriever object or None in case of an error.
+    """
+    index_name = INDEX_NAME
+    redis_url = REDIS_URL
+    embeddings = initialize_embeddings()
+    try:
+        # Start measuring time for Redis initialization
+        start_time_redis = time.time()
+        # Initialize the Redis instance with the given parameters
+        # Measure and print the time taken for Redis initialization
+        end_time_redis = time.time()
+        print(f"Vector store initialization time: {(end_time_redis - start_time_redis) * 1000:.2f} ms")
+        # Start measuring time for retriever initialization
+        start_time_retriever = time.time()
+        # Get the retriever from the Redis instance
+        retriever = redis_client.as_retriever()
+        # Measure and print the time taken for retriever initialization
+        end_time_retriever = time.time()
+        print(f"Retriever initialization time: {(end_time_retriever - start_time_retriever) * 1000:.2f} ms")
+        return retriever
+    except Exception as e:
+        # Print the error message in case of an exception
+        print(f"Error occurred during initialization: {e}")
+        return None
+ 
+ 
+def perform_query(query):
+    results = redis_client.similarity_search(query)
+    return results
+ 
+ 
+
+#contextuser=fetch_customer_context("user1")
+# Example usage
+
+ 
+def noContext(question):
+    llm = get_llm()
+    # Construct a prompt that instructs the LLM to provide concise answers
+    concise_prompt = "Please provide a concise answer to the following question:\n\n"
+    # Combine the concise instruction with the user's question
+    full_question = concise_prompt + question
+    try:
+        # Generate a response using the LLM
+        response_text = llm.predict(full_question)  # Pass the combined prompt and question to the model
+        return response_text
+    except Exception as e:
+        # Handle any exceptions that occur during LLM prediction
+        print(f"Error during LLM prediction: {e}")
+        return None
+def fetch_user_data(rc, user_id):
+    user_data = rc.hgetall(user_id)
+    if user_data:
+        user_data = {k: json.loads(v) if k == b"purchaseHistory" else v for k, v in user_data.items()}
+    return user_data
+    
+def askmeanything(question, user_details):
+    llm = get_llm()
+    #rc=initialize_redis()
+    # Construct a prompt that instructs the LLM to provide concise answers
+    similarity_response = perform_query(question)
+    #print(similarity_response)
+    ##st.write(f"User Details: {user_details}")
+    concise_prompt = "human: assume yourself as customer care agent talking to customer over chat: Use the following pieces of context to provide a concise answer in English to the question at the end. If you don't know the answer, just say that you don't know, don't try to make up an answer. also do not answer anything which is out of context do not use your wider knowledge to makeup the answer\n\n"
+    contextMemDB = fetch_user_data(rc,user_details)
+    print(contextMemDB)
+    # Ensure similarity_response is a string
+    if isinstance(similarity_response, list):
+        similarity_response = '. '.join(map(str, similarity_response))  # Join list items into a single string
+    elif not isinstance(similarity_response, str):
+        similarity_response = str(similarity_response)  # Convert non-string, non-list types to string
+ 
+    # Ensure contextaurora is a string
+    if isinstance(contextMemDB, list):
+        contextMemDB = '. '.join(map(str, contextMemDB))  # Join list items into a single string
+    elif not isinstance(contextMemDB, str):
+        contextMemDB = str(contextMemDB)  # Convert non-string, non-list types to string
+ 
+    # Combine the concise instruction with the user's question
+    full_question = (concise_prompt +
+                     " use context of company policy matching customer product policy:""" + similarity_response +
+                     """ match policy with customer product before responding. Use the following customer purchase history and dates:{ \n\n """ +
+                     contextMemDB) + """}following is the question of the user which you need to answer \n\n question:""" + question +"? Assistant:"
+ 
+    try:
+        # Generate a response using the LLM
+        response_text = llm.invoke(full_question)
+        #full_question ="orignal question="+question+"?.
+        #full_question ="rewrite a DM and  do not add part of promt like "" Here is a draft message to the customer based on the provided negative words :Draft, : here is how you send message etc "" context = {" + response_text +"} \n\n "
+        #response_text = llm.predict(full_question)# Pass the combined prompt and question to the model
+       # response_text = llm.message(full_question)
+        return response_text
+    except Exception as e:
+        # Handle any exceptions that occur during LLM prediction
+        print(f"Error during LLM prediction: {e}")
+        return None
+ 
+redis_client = Redis(
+    redis_url = REDIS_URL,
+    index_name = INDEX_NAME,
+    embedding = initialize_embeddings(),
+    # index_schema=index_schema  # Include the index schema if provided
+)
+
+ 
