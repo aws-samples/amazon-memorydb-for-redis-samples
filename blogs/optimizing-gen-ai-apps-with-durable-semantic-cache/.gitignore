@@ -1,0 +1,10 @@
+.env
+setup_knowledge_base.sh
+terraform/.terraform*
+terraform/builds
+.DS_Store
+terraform/terraform.tfstate
+terraform/terraform.tfstate.backup
+terraform.tfstate
+terraform/tf.json
+terraform/tf.plan

@@ -1,0 +1,553 @@
+Passed checks: 84, Failed checks: 17, Skipped checks: 0
+
+Check: CKV_AWS_274: "Disallow IAM roles, users, and groups from using the AWS AdministratorAccess policy"
+	PASSED for resource: aws_iam_role.knowledge_base_role
+	File: /tf.json:237-257
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-iam-policies/bc-aws-274
+Check: CKV_AWS_61: "Ensure AWS IAM policy does not allow assume role permission across all services"
+	PASSED for resource: aws_iam_role.knowledge_base_role
+	File: /tf.json:237-257
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-iam-policies/bc-aws-iam-45
+Check: CKV_AWS_60: "Ensure IAM role allows only specific services or principals to assume it"
+	PASSED for resource: aws_iam_role.knowledge_base_role
+	File: /tf.json:237-257
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-iam-policies/bc-aws-iam-44
+Check: CKV_AWS_364: "Ensure that AWS Lambda function permissions delegated to AWS services are limited by SourceArn or SourceAccount"
+	PASSED for resource: aws_lambda_permission.apigw
+	File: /tf.json:275-284
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-iam-policies/bc-aws-364
+Check: CKV_AWS_301: "Ensure that AWS Lambda function is not publicly accessible"
+	PASSED for resource: aws_lambda_permission.apigw
+	File: /tf.json:275-284
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-general-policies/bc-aws-301
+Check: CKV_AWS_202: "Ensure MemoryDB data is encrypted in transit"
+	PASSED for resource: aws_memorydb_cluster.semantic_cache_cluster
+	File: /tf.json:294-312
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-general-policies/ensure-aws-memorydb-data-is-encrypted-in-transit
+Check: CKV_AWS_93: "Ensure S3 bucket policy does not lockout all but root user. (Prevent lockouts needing root account fixes)"
+	PASSED for resource: aws_s3_bucket.knowledge_base
+	File: /tf.json:400-404
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/bc-aws-s3-24
+Check: CKV_AWS_53: "Ensure S3 bucket has block public ACLS enabled"
+	PASSED for resource: aws_s3_bucket_public_access_block.example
+	File: /tf.json:425-430
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/bc-aws-s3-19
+Check: CKV_AWS_54: "Ensure S3 bucket has block public policy enabled"
+	PASSED for resource: aws_s3_bucket_public_access_block.example
+	File: /tf.json:425-430
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/bc-aws-s3-20
+Check: CKV_AWS_55: "Ensure S3 bucket has ignore public ACLs enabled"
+	PASSED for resource: aws_s3_bucket_public_access_block.example
+	File: /tf.json:425-430
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/bc-aws-s3-21
+Check: CKV_AWS_56: "Ensure S3 bucket has 'restrict_public_buckets' enabled"
+	PASSED for resource: aws_s3_bucket_public_access_block.example
+	File: /tf.json:425-430
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/bc-aws-s3-22
+Check: CKV_AWS_260: "Ensure no security groups allow ingress from 0.0.0.0:0 to port 80"
+	PASSED for resource: aws_security_group.semantic_cache_sg
+	File: /tf.json:440-476
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-networking-policies/ensure-aws-security-groups-do-not-allow-ingress-from-00000-to-port-80
+Check: CKV_AWS_24: "Ensure no security groups allow ingress from 0.0.0.0:0 to port 22"
+	PASSED for resource: aws_security_group.semantic_cache_sg
+	File: /tf.json:440-476
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-networking-policies/networking-1-port-security
+Check: CKV_AWS_23: "Ensure every security group and rule has a description"
+	PASSED for resource: aws_security_group.semantic_cache_sg
+	File: /tf.json:440-476
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-networking-policies/networking-31
+Check: CKV_AWS_277: "Ensure no security groups allow ingress from 0.0.0.0:0 to port -1"
+	PASSED for resource: aws_security_group.semantic_cache_sg
+	File: /tf.json:440-476
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-networking-policies/ensure-aws-security-group-does-not-allow-all-traffic-on-all-ports
+Check: CKV_AWS_25: "Ensure no security groups allow ingress from 0.0.0.0:0 to port 3389"
+	PASSED for resource: aws_security_group.semantic_cache_sg
+	File: /tf.json:440-476
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-networking-policies/networking-2
+Check: CKV_AWS_66: "Ensure that CloudWatch Log Group specifies retention days"
+	PASSED for resource: module.lambda.aws_cloudwatch_log_group.lambda[0]
+	File: /tf.json:608-613
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-logging-policies/logging-13
+Check: CKV_AWS_338: "Ensure CloudWatch log groups retains logs for at least 1 year"
+	PASSED for resource: module.lambda.aws_cloudwatch_log_group.lambda[0]
+	File: /tf.json:608-613
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-logging-policies/bc-aws-338
+Check: CKV_AWS_288: "Ensure IAM policies does not allow data exfiltration"
+	PASSED for resource: module.lambda.aws_iam_policy.additional_json[0]
+	File: /tf.json:626-631
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-iam-policies/bc-aws-288
+Check: CKV_AWS_290: "Ensure IAM policies does not allow write access without constraints"
+	PASSED for resource: module.lambda.aws_iam_policy.additional_json[0]
+	File: /tf.json:626-631
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-iam-policies/bc-aws-290
+Check: CKV_AWS_287: "Ensure IAM policies does not allow credentials exposure"
+	PASSED for resource: module.lambda.aws_iam_policy.additional_json[0]
+	File: /tf.json:626-631
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-iam-policies/bc-aws-287
+Check: CKV_AWS_63: "Ensure no IAM policies documents allow "*" as a statement's actions"
+	PASSED for resource: module.lambda.aws_iam_policy.additional_json[0]
+	File: /tf.json:626-631
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-iam-policies/iam-48
+Check: CKV_AWS_289: "Ensure IAM policies does not allow permissions management / resource exposure without constraints"
+	PASSED for resource: module.lambda.aws_iam_policy.additional_json[0]
+	File: /tf.json:626-631
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-iam-policies/bc-aws-289
+Check: CKV_AWS_62: "Ensure IAM policies that allow full "*-*" administrative privileges are not created"
+	PASSED for resource: module.lambda.aws_iam_policy.additional_json[0]
+	File: /tf.json:626-631
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-iam-policies/bc-aws-iam-45
+Check: CKV_AWS_286: "Ensure IAM policies does not allow privilege escalation"
+	PASSED for resource: module.lambda.aws_iam_policy.additional_json[0]
+	File: /tf.json:626-631
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-iam-policies/bc-aws-286
+Check: CKV_AWS_63: "Ensure no IAM policies documents allow "*" as a statement's actions"
+	PASSED for resource: module.lambda.aws_iam_policy.logs[0]
+	File: /tf.json:644-648
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-iam-policies/iam-48
+Check: CKV_AWS_62: "Ensure IAM policies that allow full "*-*" administrative privileges are not created"
+	PASSED for resource: module.lambda.aws_iam_policy.logs[0]
+	File: /tf.json:644-648
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-iam-policies/bc-aws-iam-45
+Check: CKV_AWS_288: "Ensure IAM policies does not allow data exfiltration"
+	PASSED for resource: module.lambda.aws_iam_policy.tracing[0]
+	File: /tf.json:661-666
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-iam-policies/bc-aws-288
+Check: CKV_AWS_290: "Ensure IAM policies does not allow write access without constraints"
+	PASSED for resource: module.lambda.aws_iam_policy.tracing[0]
+	File: /tf.json:661-666
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-iam-policies/bc-aws-290
+Check: CKV_AWS_287: "Ensure IAM policies does not allow credentials exposure"
+	PASSED for resource: module.lambda.aws_iam_policy.tracing[0]
+	File: /tf.json:661-666
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-iam-policies/bc-aws-287
+Check: CKV_AWS_63: "Ensure no IAM policies documents allow "*" as a statement's actions"
+	PASSED for resource: module.lambda.aws_iam_policy.tracing[0]
+	File: /tf.json:661-666
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-iam-policies/iam-48
+Check: CKV_AWS_289: "Ensure IAM policies does not allow permissions management / resource exposure without constraints"
+	PASSED for resource: module.lambda.aws_iam_policy.tracing[0]
+	File: /tf.json:661-666
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-iam-policies/bc-aws-289
+Check: CKV_AWS_62: "Ensure IAM policies that allow full "*-*" administrative privileges are not created"
+	PASSED for resource: module.lambda.aws_iam_policy.tracing[0]
+	File: /tf.json:661-666
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-iam-policies/bc-aws-iam-45
+Check: CKV_AWS_355: "Ensure no IAM policies documents allow "*" as a statement's resource for restrictable actions"
+	PASSED for resource: module.lambda.aws_iam_policy.tracing[0]
+	File: /tf.json:661-666
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-iam-policies/bc-aws-355
+Check: CKV_AWS_286: "Ensure IAM policies does not allow privilege escalation"
+	PASSED for resource: module.lambda.aws_iam_policy.tracing[0]
+	File: /tf.json:661-666
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-iam-policies/bc-aws-286
+Check: CKV_AWS_288: "Ensure IAM policies does not allow data exfiltration"
+	PASSED for resource: module.lambda.aws_iam_policy.vpc[0]
+	File: /tf.json:679-684
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-iam-policies/bc-aws-288
+Check: CKV_AWS_287: "Ensure IAM policies does not allow credentials exposure"
+	PASSED for resource: module.lambda.aws_iam_policy.vpc[0]
+	File: /tf.json:679-684
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-iam-policies/bc-aws-287
+Check: CKV_AWS_63: "Ensure no IAM policies documents allow "*" as a statement's actions"
+	PASSED for resource: module.lambda.aws_iam_policy.vpc[0]
+	File: /tf.json:679-684
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-iam-policies/iam-48
+Check: CKV_AWS_289: "Ensure IAM policies does not allow permissions management / resource exposure without constraints"
+	PASSED for resource: module.lambda.aws_iam_policy.vpc[0]
+	File: /tf.json:679-684
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-iam-policies/bc-aws-289
+Check: CKV_AWS_62: "Ensure IAM policies that allow full "*-*" administrative privileges are not created"
+	PASSED for resource: module.lambda.aws_iam_policy.vpc[0]
+	File: /tf.json:679-684
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-iam-policies/bc-aws-iam-45
+Check: CKV_AWS_286: "Ensure IAM policies does not allow privilege escalation"
+	PASSED for resource: module.lambda.aws_iam_policy.vpc[0]
+	File: /tf.json:679-684
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-iam-policies/bc-aws-286
+Check: CKV_AWS_274: "Disallow IAM roles, users, and groups from using the AWS AdministratorAccess policy"
+	PASSED for resource: module.lambda.aws_iam_role.lambda[0]
+	File: /tf.json:697-705
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-iam-policies/bc-aws-274
+Check: CKV_AWS_61: "Ensure AWS IAM policy does not allow assume role permission across all services"
+	PASSED for resource: module.lambda.aws_iam_role.lambda[0]
+	File: /tf.json:697-705
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-iam-policies/bc-aws-iam-45
+Check: CKV_AWS_60: "Ensure IAM role allows only specific services or principals to assume it"
+	PASSED for resource: module.lambda.aws_iam_role.lambda[0]
+	File: /tf.json:697-705
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-iam-policies/bc-aws-iam-44
+Check: CKV_AWS_274: "Disallow IAM roles, users, and groups from using the AWS AdministratorAccess policy"
+	PASSED for resource: module.lambda.aws_iam_role_policy_attachment.additional_json[0]
+	File: /tf.json:712-721
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-iam-policies/bc-aws-274
+Check: CKV_AWS_274: "Disallow IAM roles, users, and groups from using the AWS AdministratorAccess policy"
+	PASSED for resource: module.lambda.aws_iam_role_policy_attachment.logs[0]
+	File: /tf.json:722-731
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-iam-policies/bc-aws-274
+Check: CKV_AWS_274: "Disallow IAM roles, users, and groups from using the AWS AdministratorAccess policy"
+	PASSED for resource: module.lambda.aws_iam_role_policy_attachment.tracing[0]
+	File: /tf.json:732-741
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-iam-policies/bc-aws-274
+Check: CKV_AWS_274: "Disallow IAM roles, users, and groups from using the AWS AdministratorAccess policy"
+	PASSED for resource: module.lambda.aws_iam_role_policy_attachment.vpc[0]
+	File: /tf.json:742-751
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-iam-policies/bc-aws-274
+Check: CKV_AWS_50: "X-Ray tracing is enabled for Lambda"
+	PASSED for resource: module.lambda.aws_lambda_function.this[0]
+	File: /tf.json:760-829
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-serverless-policies/bc-aws-serverless-4
+Check: CKV_AWS_117: "Ensure that AWS Lambda function is configured inside a VPC"
+	PASSED for resource: module.lambda.aws_lambda_function.this[0]
+	File: /tf.json:760-829
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-general-policies/ensure-that-aws-lambda-function-is-configured-inside-a-vpc-1
+Check: CKV_AWS_173: "Check encryption settings for Lambda environmental variable"
+	PASSED for resource: module.lambda.aws_lambda_function.this[0]
+	File: /tf.json:760-829
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-serverless-policies/bc-aws-serverless-5
+Check: CKV_AWS_363: "Ensure Lambda Runtime is not deprecated"
+	PASSED for resource: module.lambda.aws_lambda_function.this[0]
+	File: /tf.json:760-829
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-general-policies/bc-aws-363
+Check: CKV_AWS_45: "Ensure no hard-coded secrets exist in lambda environment"
+	PASSED for resource: module.lambda.aws_lambda_function.this[0]
+	File: /tf.json:760-829
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/secrets-policies/bc-aws-secrets-3
+Check: CKV_AWS_115: "Ensure that AWS Lambda function is configured for function-level concurrent execution limit"
+	PASSED for resource: module.lambda.aws_lambda_function.this[0]
+	File: /tf.json:760-829
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-general-policies/ensure-that-aws-lambda-function-is-configured-for-function-level-concurrent-execution-limit
+Check: CKV_AWS_130: "Ensure VPC subnets do not assign public IP by default"
+	PASSED for resource: module.vpc.aws_subnet.private[0]
+	File: /tf.json:1383-1406
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-networking-policies/ensure-vpc-subnets-do-not-assign-public-ip-by-default
+Check: CKV_AWS_130: "Ensure VPC subnets do not assign public IP by default"
+	PASSED for resource: module.vpc.aws_subnet.private[1]
+	File: /tf.json:1420-1443
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-networking-policies/ensure-vpc-subnets-do-not-assign-public-ip-by-default
+Check: CKV_AWS_130: "Ensure VPC subnets do not assign public IP by default"
+	PASSED for resource: module.vpc.aws_subnet.private[2]
+	File: /tf.json:1457-1480
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-networking-policies/ensure-vpc-subnets-do-not-assign-public-ip-by-default
+Check: CKV_AWS_130: "Ensure VPC subnets do not assign public IP by default"
+	PASSED for resource: module.vpc.aws_subnet.public[0]
+	File: /tf.json:1494-1517
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-networking-policies/ensure-vpc-subnets-do-not-assign-public-ip-by-default
+Check: CKV_AWS_130: "Ensure VPC subnets do not assign public IP by default"
+	PASSED for resource: module.vpc.aws_subnet.public[1]
+	File: /tf.json:1531-1554
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-networking-policies/ensure-vpc-subnets-do-not-assign-public-ip-by-default
+Check: CKV_AWS_130: "Ensure VPC subnets do not assign public IP by default"
+	PASSED for resource: module.vpc.aws_subnet.public[2]
+	File: /tf.json:1568-1591
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-networking-policies/ensure-vpc-subnets-do-not-assign-public-ip-by-default
+Check: CKV_AWS_358: "Ensure GitHub Actions OIDC trust policies only allows actions from a specific known organization"
+	PASSED for resource: module.lambda.data.aws_iam_policy_document.logs[0]
+	File: /tf.json:880-903
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-iam-policies/iam-358
+Check: CKV_AWS_49: "Ensure no IAM policies documents allow "*" as a statement's actions"
+	PASSED for resource: module.lambda.data.aws_iam_policy_document.logs[0]
+	File: /tf.json:880-903
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-iam-policies/bc-aws-iam-43
+Check: CKV_AWS_283: "Ensure no IAM policies documents allow ALL or any AWS principal permissions to the resource"
+	PASSED for resource: module.lambda.data.aws_iam_policy_document.logs[0]
+	File: /tf.json:880-903
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-iam-policies/bc-aws-283
+Check: CKV_AWS_1: "Ensure IAM policies that allow full "*-*" administrative privileges are not created"
+	PASSED for resource: module.lambda.data.aws_iam_policy_document.logs[0]
+	File: /tf.json:880-903
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-iam-policies/iam-23
+Check: CKV2_AWS_44: "Ensure AWS route table with VPC peering does not contain routes overly permissive to all traffic"
+	PASSED for resource: module.vpc.aws_route.private_nat_gateway[0]
+	File: /tf.json:1187-1204
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-networking-policies/ensure-aws-route-table-with-vpc-peering-does-not-contain-routes-overly-permissive-to-all-traffic
+Check: CKV2_AWS_44: "Ensure AWS route table with VPC peering does not contain routes overly permissive to all traffic"
+	PASSED for resource: module.vpc.aws_route.public_internet_gateway[0]
+	File: /tf.json:1217-1234
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-networking-policies/ensure-aws-route-table-with-vpc-peering-does-not-contain-routes-overly-permissive-to-all-traffic
+Check: CKV2_AWS_44: "Ensure AWS route table with VPC peering does not contain routes overly permissive to all traffic"
+	PASSED for resource: module.vpc.aws_route_table.private[0]
+	File: /tf.json:1247-1257
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-networking-policies/ensure-aws-route-table-with-vpc-peering-does-not-contain-routes-overly-permissive-to-all-traffic
+Check: CKV2_AWS_44: "Ensure AWS route table with VPC peering does not contain routes overly permissive to all traffic"
+	PASSED for resource: module.vpc.aws_route_table.public[0]
+	File: /tf.json:1273-1283
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-networking-policies/ensure-aws-route-table-with-vpc-peering-does-not-contain-routes-overly-permissive-to-all-traffic
+Check: CKV2_AWS_5: "Ensure that Security Groups are attached to another resource"
+	PASSED for resource: aws_security_group.semantic_cache_sg
+	File: /tf.json:440-476
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-networking-policies/ensure-that-security-groups-are-attached-to-ec2-instances-or-elastic-network-interfaces-enis
+Check: CKV_AWS_20: "S3 Bucket has an ACL defined which allows public READ access."
+	PASSED for resource: aws_s3_bucket.knowledge_base
+	File: /tf.json:400-404
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/s3-1-acl-read-permissions-everyone
+Check: CKV2_AWS_56: "Ensure AWS Managed IAMFullAccess IAM policy is not used."
+	PASSED for resource: aws_iam_role.knowledge_base_role
+	File: /tf.json:237-257
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-iam-policies/bc-aws-2-56
+Check: CKV2_AWS_56: "Ensure AWS Managed IAMFullAccess IAM policy is not used."
+	PASSED for resource: module.lambda.aws_iam_role.lambda[0]
+	File: /tf.json:697-705
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-iam-policies/bc-aws-2-56
+Check: CKV2_AWS_35: "AWS NAT Gateways should be utilized for the default route"
+	PASSED for resource: module.vpc.aws_route.private_nat_gateway[0]
+	File: /tf.json:1187-1204
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-networking-policies/ensure-aws-nat-gateways-are-utilized-for-the-default-route
+Check: CKV2_AWS_35: "AWS NAT Gateways should be utilized for the default route"
+	PASSED for resource: module.vpc.aws_route.public_internet_gateway[0]
+	File: /tf.json:1217-1234
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-networking-policies/ensure-aws-nat-gateways-are-utilized-for-the-default-route
+Check: CKV2_AWS_35: "AWS NAT Gateways should be utilized for the default route"
+	PASSED for resource: module.vpc.aws_route_table.private[0]
+	File: /tf.json:1247-1257
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-networking-policies/ensure-aws-nat-gateways-are-utilized-for-the-default-route
+Check: CKV2_AWS_35: "AWS NAT Gateways should be utilized for the default route"
+	PASSED for resource: module.vpc.aws_route_table.public[0]
+	File: /tf.json:1273-1283
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-networking-policies/ensure-aws-nat-gateways-are-utilized-for-the-default-route
+Check: CKV_AWS_57: "S3 Bucket has an ACL defined which allows public WRITE access."
+	PASSED for resource: aws_s3_bucket.knowledge_base
+	File: /tf.json:400-404
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/s3-2-acl-write-permissions-everyone
+Check: CKV2_AWS_6: "Ensure that S3 bucket has a Public Access block"
+	PASSED for resource: aws_s3_bucket.knowledge_base
+	File: /tf.json:400-404
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-networking-policies/s3-bucket-should-have-public-access-blocks-defaults-to-false-if-the-public-access-block-is-not-attached
+Check: CKV_AWS_19: "Ensure all data stored in the S3 bucket is securely encrypted at rest"
+	PASSED for resource: aws_s3_bucket.knowledge_base
+	File: /tf.json:400-404
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/s3-14-data-encrypted-at-rest
+Check: CKV2_AWS_12: "Ensure the default security group of every VPC restricts all traffic"
+	PASSED for resource: module.vpc.aws_vpc.this[0]
+	File: /tf.json:1605-1623
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-networking-policies/networking-4
+Check: CKV2_AWS_40: "Ensure AWS IAM policy does not allow full IAM privileges"
+	PASSED for resource: module.lambda.aws_iam_policy.additional_json[0]
+	File: /tf.json:626-631
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-iam-policies/bc-aws-2-40
+Check: CKV2_AWS_40: "Ensure AWS IAM policy does not allow full IAM privileges"
+	PASSED for resource: module.lambda.aws_iam_policy.tracing[0]
+	File: /tf.json:661-666
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-iam-policies/bc-aws-2-40
+Check: CKV2_AWS_40: "Ensure AWS IAM policy does not allow full IAM privileges"
+	PASSED for resource: module.lambda.aws_iam_policy.vpc[0]
+	File: /tf.json:679-684
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-iam-policies/bc-aws-2-40
+Check: CKV2_AWS_40: "Ensure AWS IAM policy does not allow full IAM privileges"
+	PASSED for resource: module.lambda.data.aws_iam_policy_document.logs[0]
+	File: /tf.json:880-903
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-iam-policies/bc-aws-2-40
+Check: CKV_AWS_59: "Ensure there is no open access to back-end resources through API"
+	FAILED for resource: aws_api_gateway_method.method_post
+	File: /tf.json:77-87
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/public-policies/public-6-api-gateway-authorizer-set
+
+		78 |           "values": {
+		79 |             "api_key_required": false,
+		80 |             "authorization": "NONE",
+		81 |             "authorization_scopes": null,
+		82 |             "authorizer_id": null,
+		83 |             "http_method": "POST",
+		84 |             "operation_name": null,
+		85 |             "request_models": null,
+		86 |             "request_parameters": null,
+		87 |             "request_validator_id": null
+
+Check: CKV_AWS_201: "Ensure MemoryDB is encrypted at rest using KMS CMKs"
+	FAILED for resource: aws_memorydb_cluster.semantic_cache_cluster
+	File: /tf.json:294-312
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-general-policies/ensure-aws-memorydb-is-encrypted-at-rest-by-aws-key-management-service-kms-using-cmks
+
+		295 |           "values": {
+		296 |             "acl_name": "open-access",
+		297 |             "auto_minor_version_upgrade": true,
+		298 |             "data_tiering": false,
+		299 |             "description": "Managed by Terraform",
+		300 |             "final_snapshot_name": null,
+		301 |             "kms_key_arn": null,
+		302 |             "name": "semantic-cache-cluster",
+		303 |             "node_type": "db.t4g.small",
+		304 |             "num_replicas_per_shard": 1,
+		305 |             "num_shards": 2,
+		306 |             "snapshot_arns": null,
+		307 |             "snapshot_name": null,
+		308 |             "snapshot_retention_limit": 7,
+		309 |             "sns_topic_arn": null,
+		310 |             "tags": null,
+		311 |             "timeouts": null,
+		312 |             "tls_enabled": true
+
+Check: CKV_AWS_158: "Ensure that CloudWatch Log Group is encrypted by KMS"
+	FAILED for resource: module.lambda.aws_cloudwatch_log_group.lambda[0]
+	File: /tf.json:608-613
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-general-policies/ensure-that-cloudwatch-log-group-is-encrypted-by-kms
+
+		609 |               "values": {
+		610 |                 "kms_key_id": null,
+		611 |                 "retention_in_days": 0,
+		612 |                 "skip_destroy": false,
+		613 |                 "tags": null
+
+Check: CKV_AWS_355: "Ensure no IAM policies documents allow "*" as a statement's resource for restrictable actions"
+	FAILED for resource: module.lambda.aws_iam_policy.additional_json[0]
+	File: /tf.json:626-631
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-iam-policies/bc-aws-355
+
+		627 |               "values": {
+		628 |                 "description": null,
+		629 |                 "path": "/",
+		630 |                 "policy": "{\"Statement\":[{\"Action\":[\"bedrock:InvokeModel\",\"bedrock:RetrieveAndGenerate\",\"bedrock:Retrieve\"],\"Effect\":\"Allow\",\"Resource\":[\"*\"]}],\"Version\":\"2012-10-17\"}",
+		631 |                 "tags": null
+
+Check: CKV_AWS_290: "Ensure IAM policies does not allow write access without constraints"
+	FAILED for resource: module.lambda.aws_iam_policy.vpc[0]
+	File: /tf.json:679-684
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-iam-policies/bc-aws-290
+
+		680 |               "values": {
+		681 |                 "description": null,
+		682 |                 "path": "/",
+		683 |                 "policy": "{\"Statement\":[{\"Action\":[\"ec2:CreateNetworkInterface\",\"ec2:DescribeNetworkInterfaces\",\"ec2:DeleteNetworkInterface\",\"ec2:AssignPrivateIpAddresses\",\"ec2:UnassignPrivateIpAddresses\"],\"Effect\":\"Allow\",\"Resource\":\"*\"}],\"Version\":\"2012-10-17\"}",
+		684 |                 "tags": null
+
+Check: CKV_AWS_355: "Ensure no IAM policies documents allow "*" as a statement's resource for restrictable actions"
+	FAILED for resource: module.lambda.aws_iam_policy.vpc[0]
+	File: /tf.json:679-684
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-iam-policies/bc-aws-355
+
+		680 |               "values": {
+		681 |                 "description": null,
+		682 |                 "path": "/",
+		683 |                 "policy": "{\"Statement\":[{\"Action\":[\"ec2:CreateNetworkInterface\",\"ec2:DescribeNetworkInterfaces\",\"ec2:DeleteNetworkInterface\",\"ec2:AssignPrivateIpAddresses\",\"ec2:UnassignPrivateIpAddresses\"],\"Effect\":\"Allow\",\"Resource\":\"*\"}],\"Version\":\"2012-10-17\"}",
+		684 |                 "tags": null
+
+Check: CKV_AWS_116: "Ensure that AWS Lambda function is configured for a Dead Letter Queue(DLQ)"
+	FAILED for resource: module.lambda.aws_lambda_function.this[0]
+	File: /tf.json:760-829
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-general-policies/ensure-that-aws-lambda-function-is-configured-for-a-dead-letter-queue-dlq
+
+		Code lines for this resource are too many. Please use IDE of your choice to review the file.
+Check: CKV_AWS_272: "Ensure AWS Lambda function is configured to validate code-signing"
+	FAILED for resource: module.lambda.aws_lambda_function.this[0]
+	File: /tf.json:760-829
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-general-policies/bc-aws-272
+
+		Code lines for this resource are too many. Please use IDE of your choice to review the file.
+Check: CKV2_AWS_62: "Ensure S3 buckets should have event notifications enabled"
+	FAILED for resource: aws_s3_bucket.knowledge_base
+	File: /tf.json:400-404
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-logging-policies/bc-aws-2-62
+
+		401 |           "values": {
+		402 |             "force_destroy": true,
+		403 |             "tags": null,
+		404 |             "timeouts": null
+
+Check: CKV2_AWS_19: "Ensure that all EIP addresses allocated to a VPC are attached to EC2 instances"
+	FAILED for resource: module.vpc.aws_eip.nat[0]
+	File: /tf.json:1108-1122
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-networking-policies/ensure-that-all-eip-addresses-allocated-to-a-vpc-are-attached-to-ec2-instances
+
+		1109 |               "values": {
+		1110 |                 "address": null,
+		1111 |                 "associate_with_private_ip": null,
+		1112 |                 "customer_owned_ipv4_pool": null,
+		1113 |                 "domain": "vpc",
+		1114 |                 "tags": {
+		1115 |                   "Name": "infra-semantic-cache-us-east-1a",
+		1116 |                   "environment": "development"
+		1117 |                 },
+		1118 |                 "tags_all": {
+		1119 |                   "Name": "infra-semantic-cache-us-east-1a",
+		1120 |                   "environment": "development"
+		1121 |                 },
+		1122 |                 "timeouts": null
+
+Check: CKV2_AWS_11: "Ensure VPC flow logging is enabled in all VPCs"
+	FAILED for resource: module.vpc.aws_vpc.this[0]
+	File: /tf.json:1605-1623
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-logging-policies/logging-9-enable-vpc-flow-logging
+
+		1606 |               "values": {
+		1607 |                 "assign_generated_ipv6_cidr_block": null,
+		1608 |                 "cidr_block": "10.0.0.0/16",
+		1609 |                 "enable_dns_hostnames": true,
+		1610 |                 "enable_dns_support": true,
+		1611 |                 "instance_tenancy": "default",
+		1612 |                 "ipv4_ipam_pool_id": null,
+		1613 |                 "ipv4_netmask_length": null,
+		1614 |                 "ipv6_ipam_pool_id": null,
+		1615 |                 "ipv6_netmask_length": null,
+		1616 |                 "tags": {
+		1617 |                   "Name": "infra-semantic-cache",
+		1618 |                   "environment": "development"
+		1619 |                 },
+		1620 |                 "tags_all": {
+		1621 |                   "Name": "infra-semantic-cache",
+		1622 |                   "environment": "development"
+		1623 |                 }
+
+Check: CKV2_AWS_61: "Ensure that an S3 bucket has a lifecycle configuration"
+	FAILED for resource: aws_s3_bucket.knowledge_base
+	File: /tf.json:400-404
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-logging-policies/bc-aws-2-61
+
+		401 |           "values": {
+		402 |             "force_destroy": true,
+		403 |             "tags": null,
+		404 |             "timeouts": null
+
+Check: CKV_AWS_18: "Ensure the S3 bucket has access logging enabled"
+	FAILED for resource: aws_s3_bucket.knowledge_base
+	File: /tf.json:400-404
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/s3-13-enable-logging
+
+		401 |           "values": {
+		402 |             "force_destroy": true,
+		403 |             "tags": null,
+		404 |             "timeouts": null
+
+Check: CKV2_AWS_53: "Ensure AWS API gateway request is validated"
+	FAILED for resource: aws_api_gateway_method.method_post
+	File: /tf.json:77-87
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-general-policies/bc-aws-2-53
+
+		78 |           "values": {
+		79 |             "api_key_required": false,
+		80 |             "authorization": "NONE",
+		81 |             "authorization_scopes": null,
+		82 |             "authorizer_id": null,
+		83 |             "http_method": "POST",
+		84 |             "operation_name": null,
+		85 |             "request_models": null,
+		86 |             "request_parameters": null,
+		87 |             "request_validator_id": null
+
+Check: CKV_AWS_145: "Ensure that S3 buckets are encrypted with KMS by default"
+	FAILED for resource: aws_s3_bucket.knowledge_base
+	File: /tf.json:400-404
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-general-policies/ensure-that-s3-buckets-are-encrypted-with-kms-by-default
+
+		401 |           "values": {
+		402 |             "force_destroy": true,
+		403 |             "tags": null,
+		404 |             "timeouts": null
+
+Check: CKV_AWS_144: "Ensure that S3 bucket has cross-region replication enabled"
+	FAILED for resource: aws_s3_bucket.knowledge_base
+	File: /tf.json:400-404
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-general-policies/ensure-that-s3-bucket-has-cross-region-replication-enabled
+
+		401 |           "values": {
+		402 |             "force_destroy": true,
+		403 |             "tags": null,
+		404 |             "timeouts": null
+
+Check: CKV_AWS_21: "Ensure all data stored in the S3 bucket have versioning enabled"
+	FAILED for resource: aws_s3_bucket.knowledge_base
+	File: /tf.json:400-404
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/s3-16-enable-versioning
+
+		401 |           "values": {
+		402 |             "force_destroy": true,
+		403 |             "tags": null,
+		404 |             "timeouts": null
