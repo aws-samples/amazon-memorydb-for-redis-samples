@@ -149,6 +149,7 @@ output
 0.339 seconds total
 ```
 
+Additionally, you can access at the X-Ray traces to verify the latency of different parts of the code in the [CloudWatch console](https://us-east-1.console.aws.amazon.com/cloudwatch/home?region=us-east-1#xray:traces/query)
 
 ## Clean up
 
