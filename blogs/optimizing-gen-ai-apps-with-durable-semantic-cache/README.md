@@ -19,7 +19,7 @@ This solution automates the provisioning of an application that uses persistent 
 * Amazon Bedrock model access enabled for Anthropic Claude 3 Sonnet and Amazon Titan Embeddings G1 in us-east-1
 * jq and git
 * curl and time commands (installed by default in Mac and Linux systems)
-* Python3.11 (Runtime can be changed to other python versions in the lambda module definition in the main.tf file)
+* Python3.11 with pip. The Python runtime can be changed to other versions in the lambda module definition within the main.tf file. _python3.11 -m ensurepip_ can be used to install pip for Python3.11 
 
 ## Installation
 
@@ -28,7 +28,7 @@ This solution automates the provisioning of an application that uses persistent 
 git clone https://github.com/aws-samples/amazon-memorydb-for-redis-samples.git
 ```
 
-2. Init terraform and apply plan. This will create the infrastructure for the components of the solution
+2. Init terraform and apply plan. This will create the infrastructure for the components of the solution. Note that a role with permission to create the resources outlined in the main.tf plan (for example, one with the _administrator_ policy), is required.
 
 ```
 cd amazon-memorydb-for-redis-samples/blogs/optimizing-gen-ai-apps-with-durable-semantic-cache/terraform
@@ -51,7 +51,7 @@ echo "Bucket: $S3_BUCKET_NAME"
 
 ```
 
-Upload docs and start the ingestion job
+Upload docs and start the ingestion job. If the commands return an error related to not enough permissions, make sure that you are using the correct role with _aws sts get-caller-identity_
 ```
 aws s3 cp ../knowledgeBaseContent/ s3://$S3_BUCKET_NAME --recursive
 export INGESTION_JOB_ID=$(aws bedrock-agent start-ingestion-job --data-source-id $DATA_SOURCE_ID --knowledge-base-id $KNOWLEDGE_BASE_ID --region us-east-1 | jq .ingestionJob.ingestionJobId -r)
