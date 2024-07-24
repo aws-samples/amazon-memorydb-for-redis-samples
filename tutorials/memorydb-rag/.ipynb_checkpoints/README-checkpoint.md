@@ -39,7 +39,7 @@ cd tutorials/memorydb-rag
 pip3 install -r requirements.txt -U
 ```
 
-3. Use langchain vectorstore plugin for MemoryDB. For details [Langchain aws Official Website](https://python.langchain.com/v0.2/docs/integrations/platforms/aws/).
+3. Use langchain vectorstore plugin for MemoryDB
 ```bash
 from langchain_aws.vectorstores.inmemorydb import InMemoryVectorStore
 
@@ -108,10 +108,3 @@ When the chatbot is asked a question, we query MemoryDB with the question and re
 To see what the input prompt is to the LLM we can execute this search directly on the document store which runs a VSS 
 
 ![Similarity Search ](./images/VSS.png)
-
-## Security
-See   [CONTRIBUTING](CONTRIBUTING.md) for more information. 
-
-## License
-This library is licensed under the MIT-0 License. See the [LICENSE](LICENSE.md) file.
-
