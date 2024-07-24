@@ -55,7 +55,7 @@ def setup_index():
             TextField("answer"),
             TagField("tag"),                       # Tag Field Name
             VectorField("vector",                  # Vector Field Name
-                "FLAT", {                          # Vector Index Type: FLAT or HNSW
+                "HNSW", {                          # Vector Index Type: FLAT or HNSW
                     "TYPE": "FLOAT32",             # FLOAT32 or FLOAT64
                     "DIM": 1536,      # Number of Vector Dimensions
                     "DISTANCE_METRIC": "COSINE",   # Vector Search Distance Metric
