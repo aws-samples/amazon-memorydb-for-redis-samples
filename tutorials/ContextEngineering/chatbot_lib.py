@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 from langchain_aws import ChatBedrock
 from langchain_aws.embeddings import BedrockEmbeddings
 from langchain.chains import ConversationChain
-from langchain.document_loaders import PyPDFLoader
+from langchain_community.document_loaders import PyPDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_aws.vectorstores.inmemorydb import InMemoryVectorStore
 from redis.cluster import RedisCluster as MemoryDBCluster
@@ -22,7 +22,7 @@ MEMORYDB_CLUSTER = os.environ.get("MEMORYDB_CLUSTER")
 INDEX_NAME = 'idx:vss-chatbot'
 MEMORYDB_CLUSTER_URL = f"rediss://{MEMORYDB_CLUSTER}:6379/ssl=True&ssl_cert_reqs=none"
 pdf_path= "policy_doc.pdf"
-rc = MemoryDBCluster(host=MEMORYDB_CLUSTER, port=6379, ssl=True, decode_responses=True, ssl_cert_reqs="none")
+mc = MemoryDBCluster(host=MEMORYDB_CLUSTER, port=6379, ssl=True, decode_responses=True, ssl_cert_reqs="none")
 def initialize_memorydb():
     configs = get_configs()
     
@@ -110,7 +110,7 @@ def initializeVectorStore():
             try:
                 user_id = entry['userId']
                 purchase_data = {k: v for k, v in entry.items() if k != 'userId'}
-                rc.hset(user_id, mapping=purchase_data)
+                mc.hset(user_id, mapping=purchase_data)
             except KeyError as e:
                 print(f"Missing key {e} in entry: {entry}")
 
@@ -148,7 +148,7 @@ def initializeRetriever():
             try:
                 user_id = entry['userId']
                 purchase_data = {k: v for k, v in entry.items() if k != 'userId'}
-                rc.hset(user_id, mapping=purchase_data)
+                mc.hset(user_id, mapping=purchase_data)
             except KeyError as e:
                 print(f"Missing key {e} in entry: {entry}")
 
@@ -167,8 +167,8 @@ def perform_query(query):
     results = memorydb_client.similarity_search(query)
     return results
 
-def fetch_user_data(rc, user_id):
-    user_data = rc.hgetall(user_id)
+def fetch_user_data(mc, user_id):
+    user_data = mc.hgetall(user_id)
     if user_data:
         user_data = {k: json.loads(v) if k == b"purchaseHistory" else v for k, v in user_data.items()}
     return user_data
@@ -177,7 +177,7 @@ def askmeanything(question, user_details):
     llm = get_llm()
     similarity_response = perform_query(question)
     concise_prompt = "human: assume yourself as customer care agent talking to customer over chat: Use the following pieces of context to provide a concise answer in English to the question at the end. If you don't know the answer, just say that you don't know, don't try to make up an answer. also do not answer anything which is out of context do not use your wider knowledge to makeup the answer\n\n"
-    contextMemDB = fetch_user_data(rc, user_details)
+    contextMemDB = fetch_user_data(mc, user_details)
     print(contextMemDB)
     if isinstance(similarity_response, list):
         similarity_response = '. '.join(map(str, similarity_response))

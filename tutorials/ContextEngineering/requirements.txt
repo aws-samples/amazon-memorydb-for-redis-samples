@@ -4,3 +4,4 @@ langchain_core==0.2.23
 python-dotenv==1.0.1
 redis==5.0.7
 streamlit==1.33.0
+langchain-community==0.2.10
