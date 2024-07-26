@@ -107,9 +107,9 @@ resource "aws_memorydb_cluster" "semantic_cache_cluster" {
 ################################################################################
 
 module "lambda" {
-  source                = "terraform-aws-modules/lambda/aws"
-  attach_tracing_policy = true
-  tracing_mode          = "Active"
+  source = "terraform-aws-modules/lambda/aws"
+
+  tracing_mode = "Active"
   environment_variables = {
     "KNOWLEDGE_BASE_ID" : aws_bedrockagent_knowledge_base.docs_small.id
     "PERISTENT_SEMANTIC_CACHE_ENDPOINT" : aws_memorydb_cluster.semantic_cache_cluster.cluster_endpoint[0].address
@@ -124,12 +124,16 @@ module "lambda" {
 
   vpc_subnet_ids                     = module.vpc.private_subnets
   vpc_security_group_ids             = [aws_security_group.semantic_cache_sg.id]
-  attach_network_policy              = true
+  attach_network_policy              = false
   replace_security_groups_on_destroy = true
+  attach_tracing_policy              = false
   replacement_security_group_ids     = [aws_security_group.semantic_cache_sg.id]
   timeout                            = 30
   attach_policy_json                 = true
-  policy_json                        = <<-EOT
+  attach_cloudwatch_logs_policy      = false
+  attach_policy                    = true
+  policy = "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
+  policy_json = <<-EOT
     {
         "Version": "2012-10-17",
         "Statement": [
@@ -140,11 +144,46 @@ module "lambda" {
                     "bedrock:RetrieveAndGenerate",
                     "bedrock:Retrieve"
                 ],
-                "Resource": ["*"]
+                "Resource": [
+                  "arn:aws:bedrock:${local.region}::foundation-model/anthropic.claude-3-sonnet-20240229-v1:0",
+                  "arn:aws:bedrock:${local.region}::foundation-model/amazon.titan-embed-text-v1",
+                  "arn:aws:bedrock:${local.region}:${data.aws_caller_identity.current.account_id}:knowledge-base/*"
+                ]
+            },
+            {
+                "Effect": "Allow",
+                "Action":[
+                  "xray:PutTraceSegments",
+                  "xray:PutTelemetryRecords",
+                  "xray:GetSamplingRules",
+                  "xray:GetSamplingStatisticSummaries",
+                  "xray:GetSamplingTargets"
+                ],
+                "Resource": [
+                  "*"
+                ]
             }
         ]
     }
   EOT
+
+  code_signing_config_arn = aws_lambda_code_signing_config.this.arn
+
+}
+
+resource "aws_lambda_code_signing_config" "this" {
+  allowed_publishers {
+    signing_profile_version_arns = [aws_signer_signing_profile.this.arn]
+  }
+
+  policies {
+    untrusted_artifact_on_deployment = "Warn"
+  }
+
+}
+
+resource "aws_signer_signing_profile" "this" {
+  platform_id = "AWSLambda-SHA384-ECDSA"
 }
 
 ################################################################################
