@@ -2,87 +2,75 @@ import os
 import redis
 import time
 from dotenv import load_dotenv
-from langchain.embeddings import BedrockEmbeddings
-from langchain.llms.bedrock import Bedrock
-from langchain.memory import ConversationSummaryBufferMemory
+from langchain_aws import ChatBedrock
+from langchain_aws.embeddings import BedrockEmbeddings
 from langchain.chains import ConversationChain
 from langchain.document_loaders import PyPDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain.chains import RetrievalQA
-from langchain.prompts import PromptTemplate
-from langchain_memorydb import MemoryDB as Redis
+from langchain_aws.vectorstores.inmemorydb import InMemoryVectorStore
+from redis.cluster import RedisCluster as MemoryDBCluster
+from langchain.chains import create_retrieval_chain
+from langchain.chains.combine_documents import create_stuff_documents_chain
+from langchain_core.prompts import ChatPromptTemplate
 load_dotenv()
 
 
 # Constants
 MEMORYDB_CLUSTER = os.environ.get("MEMORYDB_CLUSTER")
 INDEX_NAME = 'idx:vss-mm'
-REDIS_URL = f"rediss://{MEMORYDB_CLUSTER}:6379/ssl=True&ssl_cert_reqs=none"
+MEMORYDB_CLUSTER_URL = f"rediss://{MEMORYDB_CLUSTER}:6379/ssl=True&ssl_cert_reqs=none"
 pdf_path= "memorydb-guide.pdf"
 
 
-def initialize_redis():
+def initialize_memorydb():
     configs = get_configs()
-    client = redis.Redis(
-        host=configs['MEMORYDB_CLUSTER'],
-        port=6379, 
-        decode_responses=True, 
-        ssl=True, 
-        ssl_cert_reqs="none")
+    client=MemoryDBCluster(
+           host=configs['MEMORYDB_CLUSTER'], 
+           port=6379,
+           ssl=True, 
+           decode_responses=True, 
+           ssl_cert_reqs="none")
     try:
         client.ping()
         print("Connection to MemoryDB successful")
         return client
     except Exception as e:
-        print("An error occurred while connecting to Redis:", e)
+        print("An error occurred while connecting to MemoryDB:", e)
         return None
-
 
 def get_configs():
     configs = {}
     configs['MEMORYDB_CLUSTER'] = os.environ.get("MEMORYDB_CLUSTER")
-    configs['BWB_PROFILE_NAME'] = os.environ.get("BWB_PROFILE_NAME") #sets the profile name to use for AWS credentials (if not the default)
-    configs['BWB_REGION_NAME'] = os.environ.get("BWB_REGION_NAME") #sets the region name (if not the default)
-    configs['BWB_ENDPOINT_URL'] = os.environ.get("BWB_ENDPOINT_URL") #sets the endpoint URL (if necessary)
-    # configs['MODEL_ID'] = "mmeta.llama2-13b-chat-v1"
-    configs['MODEL_ID'] = "anthropic.claude-instant-v1" #use the Anthropic Claude model
     return configs
 
 
 # Initialize Bedrock model
 def get_llm():
+    # create the Anthropic Model
     model_kwargs = {
-        "max_tokens_to_sample": 8000,
-        "temperature": 0.2, 
-        "top_k": 250, 
-        "top_p": 0.9,
-        "stop_sequences": ["\\n\\nHuman:"],
-    }
+    "temperature": 0, 
+    "top_k": 250, 
+    "top_p": 1,
+    "stop_sequences": ["\\n\\nHuman:"]
+    }    
     configs = get_configs()
-    llm = Bedrock(
-        credentials_profile_name=configs['BWB_PROFILE_NAME'],
-        region_name=configs['BWB_REGION_NAME'],
-        endpoint_url=configs['BWB_ENDPOINT_URL'],
-        model_id=configs['MODEL_ID'],
-        model_kwargs=model_kwargs
-    ) #configure the properties for Claude
+    llm = ChatBedrock(
+    model_id="anthropic.claude-3-sonnet-20240229-v1:0",
+    model_kwargs=model_kwargs
+    )
     return llm
     
     
 # Initialize embeddings
 def initialize_embeddings():
-    configs = get_configs()
-    embeddings = BedrockEmbeddings(
-        credentials_profile_name=configs["BWB_PROFILE_NAME"],
-        region_name=configs["BWB_REGION_NAME"],
-        endpoint_url=configs["BWB_ENDPOINT_URL"],
-    )
+    #configs = get_configs()
+    embeddings = BedrockEmbeddings()
     return embeddings
     
     
 def check_index_existence():
     try:
-        client=initialize_redis()
+        client=initialize_memorydb()
         info = client.ft(INDEX_NAME).info()
         num_docs = info.get('num_docs', 'N/A')
         space_usage = info.get('space_usage', 'N/A')
@@ -118,12 +106,12 @@ def initializeVectorStore():
         )
         # Split the text into chunks using the defined splitter
         chunks = loader.load_and_split(text_splitter)
-        # Create Redis vector store
-        # Initialize the Redis vector store with the chunks and embedding details
-        vectorstore = Redis.from_documents(
+        # Create MemoryDB vector store
+        # Initialize the MemoryDB vector store with the chunks and embedding details
+        vectorstore = InMemoryVectorStore.from_documents(
             chunks,
             embedding=embeddings,
-            redis_url=REDIS_URL,
+            redis_url=MEMORYDB_CLUSTER_URL,
             index_name=INDEX_NAME,
         )
         # Calculate and print the execution time upon successful completion
@@ -151,19 +139,19 @@ def initializeRetriever():
     :return: The retriever object or None in case of an error.
     """
     index_name = INDEX_NAME
-    redis_url = REDIS_URL
+    redis_url = MEMORYDB_CLUSTER_URL
     embeddings = initialize_embeddings()
     try:
-        # Start measuring time for Redis initialization
+        # Start measuring time for MemoryDB initialization
         start_time_redis = time.time()
-        # Initialize the Redis instance with the given parameters
-        # Measure and print the time taken for Redis initialization
+        # Initialize the MemoryDB instance with the given parameters
+        # Measure and print the time taken for MemoryDB initialization
         end_time_redis = time.time()
         print(f"Vector store initialization time: {(end_time_redis - start_time_redis) * 1000:.2f} ms")
         # Start measuring time for retriever initialization
         start_time_retriever = time.time()
-        # Get the retriever from the Redis instance
-        retriever = redis_client.as_retriever()
+        # Get the retriever from the MemoryDB instance
+        retriever = memorydb_client.as_retriever()
         # Measure and print the time taken for retriever initialization
         end_time_retriever = time.time()
         print(f"Retriever initialization time: {(end_time_retriever - start_time_retriever) * 1000:.2f} ms")
@@ -175,34 +163,32 @@ def initializeRetriever():
 
 
 def perform_query(query):
-    results = redis_client.similarity_search(query)
+    results = memorydb_client.similarity_search(query)
     return results
 
 
 # Initialize Retrieval QA with prompt
 def query_and_get_response(question):
-    prompt_template = """Human: Use the following pieces of context to provide a concise answer in English to the question at the end. If you don't know the answer, just say that you don't know, don't try to make up an answer.
-
-    {context}
-
-    Question: {question}
-    Assistant:"""
-    PROMPT = PromptTemplate(
-        template=prompt_template, 
-        input_variables=["context", "question"])
+    system_prompt = (
+        "Use the given context to answer the question. "
+        "If you don't know the answer, say you don't know. "
+        "Use three sentences maximum and keep the answer concise. "
+        "Context: {context}"
+    )
+    prompt = ChatPromptTemplate.from_messages(
+        [
+            ("system", system_prompt),
+            ("human", "{input}"),
+        ]
+    )
     llm=get_llm()
     retriever=initializeRetriever()
-    qa_prompt = RetrievalQA.from_chain_type(
-        llm=llm,
-        chain_type="stuff",
-        retriever=retriever,
-        return_source_documents=True,
-        chain_type_kwargs={"prompt": PROMPT},
-        verbose = True ,
-    )
-    result = qa_prompt({"query": question})
-    return result["result"]
-    
+    question_answer_chain = create_stuff_documents_chain(llm, prompt)
+    chain = create_retrieval_chain(retriever, question_answer_chain)
+    response = chain.invoke({"input": question})
+    result=response["answer"]
+    return result
+
     
 def noContext(question):
     llm = get_llm()
@@ -212,15 +198,16 @@ def noContext(question):
     full_question = concise_prompt + question
     try:
         # Generate a response using the LLM
-        response_text = llm.predict(full_question)  # Pass the combined prompt and question to the model
-        return response_text
+        response_text = llm.invoke(full_question)  # Pass the combined prompt and question to the model
+        result=response_text.content
+        return result
     except Exception as e:
         # Handle any exceptions that occur during LLM prediction
         print(f"Error during LLM prediction: {e}")
         return None
 
-redis_client = Redis(
-    redis_url = REDIS_URL,
+memorydb_client = InMemoryVectorStore(
+    redis_url = MEMORYDB_CLUSTER_URL,
     index_name = INDEX_NAME,
     embedding = initialize_embeddings(),
     # index_schema=index_schema  # Include the index schema if provided

@@ -45,34 +45,23 @@ Before you proceed, make sure you have the following prerequisites in place:
     pip install -r requirements.txt -U
     ```
 
-3. **Install the LangChain vector store plugin for MemoryDB**. This is a custom vector store in LangChain on Redis API:
+3. **Use langchain vectorstore plugin for MemoryDB** For details [Langchain aws Official Website](https://python.langchain.com/v0.2/docs/integrations/platforms/aws/).
 
     ```bash
-    cd tutorials/langchain-memorydb
-    pip install . 
+        from langchain_aws.vectorstores.inmemorydb import InMemoryVectorStore
+
+        vds = InMemoryVectorStore.from_documents(
+            chunks,
+            embeddings,
+            redis_url="rediss://cluster_endpoint:6379/ssl=True ssl_cert_reqs=none",
+            vector_schema=vector_schema,
+            index_name=INDEX_NAME,
+        ) 
     ```
-
-    To implement the MemoryDB LangChain driver in your application, use the following import statement:
-
-    ```python
-    from langchain_memorydb import MemoryDB as Redis
-    ```
-
 4. **Configure environment variables** as relevant to your environment. The parameters below can use the default values, and you can skip the export below if the defaults are not updated:
 
     ```bash
-    export BWB_ENDPOINT_URL=https://bedrock-runtime.us-east-1.amazonaws.com
     export MEMORYDB_CLUSTER=rediss://CLUSTER_ENDPOINT:PORT
-    export BWB_PROFILE_NAME=IF_YOU_NEED_TO_USE_AN_AWS_CLI_PROFILE_IT_GOES_HERE
-    export BWB_REGION_NAME=REGION_NAME_GOES_HERE_IF_YOU_NEED_TO_OVERRIDE_THE_DEFAULT_REGION
-    ```
-
-    You can run the following commands to confirm if the values set above are being reflected:
-
-    ```bash
-    echo $BWB_ENDPOINT_URL
-    echo $BWB_PROFILE_NAME
-    echo $BWB_REGION_NAME
     ```
 
 5. **Run the application** on the terminal:
