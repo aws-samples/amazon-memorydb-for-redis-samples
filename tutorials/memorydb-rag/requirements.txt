@@ -4,4 +4,4 @@ langchain_core==0.2.23
 pandas==2.2.2
 python-dotenv==1.0.1
 redis==5.0.7
-streamlit==1.33.0
+streamlit==1.37.0
