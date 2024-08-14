@@ -37,11 +37,3 @@ The overall architecture is like this:
   * [rag-with-amazon-opensearch](https://github.com/ksmin23/rag-with-amazon-opensearch) - Question Answering application with Large Language Models (LLMs) and Amazon OpenSearch Service with [LangChain](https://www.langchain.com/)
   * [rag-with-amazon-opensearch-serverless](https://github.com/aws-samples/rag-with-amazon-opensearch-serverless) - Question Answering application with Large Language Models (LLMs) and Amazon OpenSearch Service Serverless with [LangChain](https://www.langchain.com/)
   * [rag-with-haystack-and-amazon-opensearch](https://github.com/ksmin23/rag-with-haystack-and-amazon-opensearch) - Question Answering application with Large Language Models (LLMs) and Amazon OpenSearch Service with [Haystack](https://haystack.deepset.ai/)
-
-## Security
-
-See [CONTRIBUTING](CONTRIBUTING.md#security-issue-notifications) for more information.
-
-## License
-
-This library is licensed under the MIT-0 License. See the LICENSE file.

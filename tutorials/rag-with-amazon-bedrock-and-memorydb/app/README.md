@@ -11,11 +11,6 @@ SageMaker Studio provides a convenient platform to host the Streamlit web applic
    cd tutorials/rag-with-amazon-bedrock-and-memorydb/app
    python -m venv .env
    source .env/bin/activate
-
-   # install LangChain MemoryDB package
-   cd ../../langchain-memorydb
-   pip install . # (NOTE: There is a DOT at the end.)
-   cd -
    pip install -U -r requirements.txt
    ```
 3. In the shell, set the following environment variables with the values that are available from the CloudFormation stack output.
