@@ -1,8 +1,8 @@
-# [Amazon MemoryDB for Redis](https://aws.amazon.com/memorydb/) Samples
+# [Amazon MemoryDB](https://aws.amazon.com/memorydb/) Samples
 
-[Amazon MemoryDB for Redis](https://aws.amazon.com/memorydb/) is a durable database with microsecond reads, low single-digit millisecond writes, scalability, and enterprise security.
+[Amazon MemoryDB](https://aws.amazon.com/memorydb/) is a durable database with microsecond reads, low single-digit millisecond writes, scalability, and enterprise security.
 
-![Amazon MemoryDB for Redis - How it works](https://d1.awsstatic.com/product-page-diagram_Amazon-MemoryDB-for-Redis.38339d976bd9b151350f496469d4d54b21173523.png)
+![Amazon MemoryDB - How it works](https://d1.awsstatic.com/product-page-diagram_Amazon-MemoryDB-for-Redis.38339d976bd9b151350f496469d4d54b21173523.png)
 
 ## Blogs
 
