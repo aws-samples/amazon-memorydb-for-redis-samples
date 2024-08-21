@@ -13,7 +13,7 @@ from langchain.prompts import PromptTemplate
 from langchain_aws import ChatBedrock as BedrockChat
 from langchain_community.embeddings import BedrockEmbeddings
 
-from langchain_memorydb import MemoryDB
+from langchain_aws.vectorstores.inmemorydb import InMemoryVectorStore
 
 class bcolors:
   HEADER = '\033[95m'
@@ -75,7 +75,7 @@ def build_chain():
     region_name=region
   )
 
-  memorydb_client = MemoryDB(
+  memorydb_client = InMemoryVectorStore(
     redis_url=REDIS_URL,
     index_name=INDEX_NAME,
     embedding=embeddings
@@ -120,7 +120,7 @@ def build_chain():
 
 
 def run_chain(chain, prompt: str, history=[]):
-  return chain({"question": prompt, "chat_history": history})
+  return chain.invoke({"question": prompt, "chat_history": history})
 
 
 if __name__ == "__main__":
