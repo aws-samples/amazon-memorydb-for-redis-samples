@@ -38,7 +38,7 @@ def initialize_memorydb():
         print("Connection to MemoryDB successful")
         return client
     except Exception as e:
-        print("An error occurred while connecting to Redis:", e)
+        print("An error occurred while connecting to MemoryDB:", e)
         return None
 
 def get_configs():
@@ -99,7 +99,7 @@ def initializeVectorStore():
         vectorstore = InMemoryVectorStore.from_documents(
             chunks,
             embedding=embeddings,
-            redis_url=MEMORYDB_CLUSTER_URL,
+            memorydb_url=MEMORYDB_CLUSTER_URL,
             index_name=INDEX_NAME,
         )
         end_time = time.time()
@@ -114,7 +114,7 @@ def initializeVectorStore():
             except KeyError as e:
                 print(f"Missing key {e} in entry: {entry}")
 
-        print("Data loaded into Redis successfully.")
+        print("Data loaded into MemoryDB successfully.")
         print(f"initializeVectorStore() executed in {end_time - start_time:.2f} seconds")
         return vectorstore
     except Exception as e:
@@ -127,22 +127,22 @@ def initializeRetriever():
     """
     Initializes a MemoryDB instance as a retriever for an existing vector store.
  
-    :param redis_url: The URL of the MemoryDB cluster instance.
+    :param memorydb_url: The URL of the MemoryDB cluster instance.
     :param index_name: The name of the index in the MemoryDB vector store.
     :param embeddings: The embeddings to use for the retriever.
     :param index_schema: (Optional) The index schema, if needed.
     :return: The retriever object or None in case of an error.
     """
     index_name = INDEX_NAME
-    redis_url = MEMORYDB_CLUSTER_URL
+    memorydb_url = MEMORYDB_CLUSTER_URL
     embeddings = initialize_embeddings()
     try:
-        start_time_redis = time.time()
-        end_time_redis = time.time()
-        print(f"Vector store initialization time: {(end_time_redis - start_time_redis) * 1000:.2f} ms")
+        start_time_memorydb = time.time()
+        end_time_memorydb = time.time()
+        print(f"Vector store initialization time: {(end_time_memorydb - start_time_memorydb) * 1000:.2f} ms")
 
-        # Load user data from 'sampledata.txt' into Redis
-        with open('sampledata.txt', 'r') as file:
+        # Load user data from 'sampledata.json' into MemoryDB
+        with open('sampledata.json', 'r') as file:
             data = json.load(file)
         for entry in data:
             try:
@@ -152,7 +152,7 @@ def initializeRetriever():
             except KeyError as e:
                 print(f"Missing key {e} in entry: {entry}")
 
-        print("Data loaded into Redis successfully.")
+        print("Data loaded into MemoryDB successfully.")
 
         start_time_retriever = time.time()
         retriever = memorydb_client.as_retriever()
@@ -203,7 +203,7 @@ def askmeanything(question, user_details):
         return None
 
 memorydb_client = InMemoryVectorStore(
-    redis_url = MEMORYDB_CLUSTER_URL,
+    memorydb_url = MEMORYDB_CLUSTER_URL,
     index_name = INDEX_NAME,
     embedding = initialize_embeddings(),
 )

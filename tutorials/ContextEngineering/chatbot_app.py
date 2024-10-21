@@ -5,7 +5,7 @@ import time
 # Streamlit page configuration
 st.title("MemoryDB as Vector Store")
 
-# Initialize Redis client
+# Initialize MemoryDB client
 client_dev = glib.initialize_memorydb()
 
 # Check if the index exists
