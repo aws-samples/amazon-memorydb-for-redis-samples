@@ -99,7 +99,7 @@ def initializeVectorStore():
         vectorstore = InMemoryVectorStore.from_documents(
             chunks,
             embedding=embeddings,
-            memorydb_url=MEMORYDB_CLUSTER_URL,
+            redis_url=MEMORYDB_CLUSTER_URL,
             index_name=INDEX_NAME,
         )
         end_time = time.time()
@@ -127,14 +127,14 @@ def initializeRetriever():
     """
     Initializes a MemoryDB instance as a retriever for an existing vector store.
  
-    :param memorydb_url: The URL of the MemoryDB cluster instance.
+    :param redis_url: The URL of the MemoryDB cluster instance.
     :param index_name: The name of the index in the MemoryDB vector store.
     :param embeddings: The embeddings to use for the retriever.
     :param index_schema: (Optional) The index schema, if needed.
     :return: The retriever object or None in case of an error.
     """
     index_name = INDEX_NAME
-    memorydb_url = MEMORYDB_CLUSTER_URL
+    redis_url = MEMORYDB_CLUSTER_URL
     embeddings = initialize_embeddings()
     try:
         start_time_memorydb = time.time()
@@ -203,7 +203,7 @@ def askmeanything(question, user_details):
         return None
 
 memorydb_client = InMemoryVectorStore(
-    memorydb_url = MEMORYDB_CLUSTER_URL,
+    redis_url = MEMORYDB_CLUSTER_URL,
     index_name = INDEX_NAME,
     embedding = initialize_embeddings(),
 )
