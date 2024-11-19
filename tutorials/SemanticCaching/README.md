@@ -9,7 +9,6 @@ Specifically, you can store the vector embeddings of requests and the generated 
 
 In this tutorial, we will use an in-memory database, Amazon MemoryDB, to demonstrate this pattern.
 
-![Architecture Diagram](./img/img1.png)
 
 ## Requirements
 - Jupyter Lab
