@@ -15,7 +15,7 @@ In this tutorial, we will use an in-memory database, Amazon MemoryDB, to demonst
 - MemoryDB with Vector Search enabled
 
 ## Getting Started
-Open Jupyter Notebook `real-time-fraud-detection.ipynb`
+Open Jupyter Notebook `DurableSCwithFilter.ipynb`
 
 ## Security
 See   [CONTRIBUTING](CONTRIBUTING.md) for more information.
