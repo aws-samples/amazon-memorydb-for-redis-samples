@@ -92,6 +92,7 @@ resource "aws_memorydb_subnet_group" "semantic_cache_subnets" {
 }
 
 resource "aws_memorydb_cluster" "semantic_cache_cluster" {
+  description              = "Managed by Terraform - MemoryDB cluster for the semantic cache (uksb-vkd97u0gri)"
   acl_name                 = "open-access"
   name                     = "semantic-cache-cluster"
   node_type                = "db.t4g.small"
