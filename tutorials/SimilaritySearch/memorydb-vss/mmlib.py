@@ -1,44 +1,46 @@
 import numpy as np
 import pandas as pd
-import redis
 import json
 import time
 import os
+import logging
 from sentence_transformers import SentenceTransformer
-from redis.commands.search.query import Query
-from redis.commands.search.field import VectorField
-from redis.commands.search.field import TextField
-from redis.commands.search.field import TagField
-from redis.commands.search.result import Result
-from redis.cluster import RedisCluster as Redis
+import redis
+
+
+# Set up logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+
 # Constants
 INDEX_NAME = 'idx:pqa_vss'
 ITEM_KEYWORD_EMBEDDING_FIELD = 'question_vector'
 TEXT_EMBEDDING_DIMENSION = 768
 NUMBER_PRODUCTS = 1000
 MEMORYDB_CLUSTER = os.environ.get("MEMORYDB_CLUSTER")
+
 # Initialize model
 model = SentenceTransformer('sentence-transformers/all-distilroberta-v1')
 
-# Initialize Redis client
 def initialize_redis():
-    client = redis.Redis(
-        host=MEMORYDB_CLUSTER,
-        port=6379, 
-        decode_responses=True, 
-        ssl=True, 
-        ssl_cert_reqs="none")
     try:
+        logging.info(f"Attempting to connect to MemoryDB at {MEMORYDB_CLUSTER}")
+        client = redis.Redis(
+            host=MEMORYDB_CLUSTER,
+            port=6379,
+            decode_responses=False,
+            ssl=True,
+            ssl_cert_reqs="none"
+        )
         client.ping()
-        print("Connection to MemoryDB successful")
+        logging.info("Connection to MemoryDB successful")
         return client
     except Exception as e:
-        print("An error occurred while connecting to Redis:", e)
+        logging.error(f"An error occurred while connecting to Redis: {e}")
         return None
 
 def loadVectorStore(client, file_name='amazon-pqa/amazon_pqa_headsets.json', number_rows=1000):
-    # Load PQA data
     def load_pqa(file_name, number_rows):
+        logging.info(f"Loading PQA data from {file_name}")
         df = pd.DataFrame(columns=('question', 'answer'))
         with open(file_name) as f:
             for i, line in enumerate(f):
@@ -46,67 +48,55 @@ def loadVectorStore(client, file_name='amazon-pqa/amazon_pqa_headsets.json', num
                     break
                 data = json.loads(line)
                 df.loc[i] = [data['question_text'], data['answers'][0]['answer_text']]
+        logging.info(f"Loaded {len(df)} rows of PQA data")
         return df
 
-    # Create vector embeddings for questions
     def create_embeddings(qa_list):
+        logging.info("Creating embeddings for questions")
         item_keywords = [qa['question'] for qa in qa_list.to_dict(orient='index').values()]
         return [model.encode(sentence) for sentence in item_keywords]
 
-    # Load vectors into Redis
     def load_vectors(client, qa_list, vector_dict):
+        logging.info("Loading vectors into Redis")
         for index, qa in qa_list.iterrows():
             key = f'product:{index}'
             item_keywords_vector = vector_dict[index].astype(np.float32).tobytes()
-            qa[ITEM_KEYWORD_EMBEDDING_FIELD] = item_keywords_vector
-            client.hset(key, mapping=qa.to_dict())
+            client.hset(key, ITEM_KEYWORD_EMBEDDING_FIELD, item_keywords_vector)
+            client.hset(key, 'question', qa['question'].encode('utf-8'))
+            client.hset(key, 'answer', qa['answer'].encode('utf-8'))
+        logging.info(f"Loaded {len(qa_list)} vectors into Redis")
 
-    # Start timing for vector loading
-   # start_time = time.time()
     qa_list = load_pqa(file_name, number_rows)
-    product_metadata = qa_list.head(NUMBER_PRODUCTS).to_dict(orient='index')
     item_keywords_vectors = create_embeddings(qa_list)
     start_time = time.time()
     load_vectors(client, qa_list, item_keywords_vectors)
     end_time = time.time()
 
-    print(f'Loading and Indexing {NUMBER_PRODUCTS} products completed in {end_time - start_time:.2f} seconds')
-
-    # Start timing for index creation
-    start_time = time.time()
-    create_index_command = "FT.CREATE idx:pqa_vss SCHEMA question_vector VECTOR HNSW 10 TYPE FLOAT32 DIM 768 DISTANCE_METRIC COSINE INITIAL_CAP 1000 M 40 question TEXT answer TEXT"
-    try:
-        response = client.execute_command(create_index_command)
-        end_time = time.time()
-        print("Index created successfully in {:.2f} seconds:".format(end_time - start_time), response)
-    except Exception as e:
-        print("An error occurred while creating the index:", e)
+    logging.info(f'Loading {NUMBER_PRODUCTS} products completed in {end_time - start_time:.2f} seconds')
 
 def check_index_existence(client):
-    try:
-        info = client.ft(INDEX_NAME).info()
-        num_docs = info.get('num_docs', 'N/A')
-        space_usage = info.get('space_usage', 'N/A')
-        num_indexed_vectors = info.get('num_indexed_vectors', 'N/A')
-        vector_space_usage = info.get('vector_space_usage', 'N/A')
-        index_details = {
-            'num_docs': num_docs,
-            'space_usage': space_usage,
-            'num_indexed_vectors': num_indexed_vectors,
-            'vector_space_usage': vector_space_usage,
-            'exists': True
-        }
-        return index_details
-    except Exception:
-        return {'exists': False}
+    keys = client.keys(b'product:*')
+    result = {'exists': len(keys) > 0, 'num_docs': len(keys)}
+    logging.info(f"Index check result: {result}")
+    return result
 
-# Function to process a question
 def process_question(client, query):
-    topK = 5  # Number of top results to retrieve
-    query_vector = model.encode(query).astype(np.float32).tobytes()
-    q = Query(f'*=>[KNN {topK} @{ITEM_KEYWORD_EMBEDDING_FIELD} $vec_param AS vector_score]').paging(0, topK).return_fields('question', 'answer')
-    params_dict = {"vec_param": query_vector}
-    results = client.ft(INDEX_NAME).search(q, query_params=params_dict)
-    data = [{'Hash Key': doc.id, 'Question': doc.question, 'Answer': doc.answer} for doc in results.docs]
+    logging.info(f"Processing question: {query}")
+    query_vector = model.encode(query).astype(np.float32)
+    
+    results = []
+    for key in client.keys(b'product:*'):
+        product_data = client.hgetall(key)
+        if ITEM_KEYWORD_EMBEDDING_FIELD.encode('utf-8') in product_data:
+            product_vector = np.frombuffer(product_data[ITEM_KEYWORD_EMBEDDING_FIELD.encode('utf-8')], dtype=np.float32)
+            similarity = np.dot(query_vector, product_vector) / (np.linalg.norm(query_vector) * np.linalg.norm(product_vector))
+            question = product_data[b'question'].decode('utf-8')
+            answer = product_data[b'answer'].decode('utf-8')
+            results.append((key, similarity, question, answer))
+    
+    results.sort(key=lambda x: x[1], reverse=True)
+    top_results = results[:5]  # Get top 5 results
+    
+    data = [{'Hash Key': key.decode('utf-8'), 'Similarity': sim, 'Question': q, 'Answer': a} for key, sim, q, a in top_results]
+    logging.info(f"Found {len(results)} results for the query")
     return pd.DataFrame(data)
-
